@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resumidor de Links</title>
+</head>
+<body>
+  <h1>Resumidor de Links</h1>
+  <input type="text" id="urlInput" placeholder="Cole o link aqui" size="60" />
+  <button id="btnResumir">Resumir</button>
+
+  <pre id="resultado" style="white-space: pre-wrap; margin-top: 20px;"></pre>
+
+  <script>
+    const btn = document.getElementById("btnResumir");
+    const resultado = document.getElementById("resultado");
+
+    btn.onclick = async () => {
+      const url = document.getElementById("urlInput").value.trim();
+      if (!url) {
+        alert("Por favor, insira um link.");
+        return;
+      }
+
+      resultado.textContent = "Resumindo...";
+
+      try {
+        const response = await fetch("/resumir", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ url }),
+        });
+
+        const data = await response.json();
+        resultado.textContent = data.resumo || "Nenhum resumo gerado.";
+      } catch (e) {
+        resultado.textContent = "Erro ao comunicar com o servidor.";
+      }
+    };
+  </script>
+</body>
+</html>
